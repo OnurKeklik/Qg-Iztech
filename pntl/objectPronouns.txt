@@ -1,0 +1,7 @@
+< i | me >
+< you | you >
+< he | him >
+< she | her >
+< it | it >
+< we | us >
+< they | them >

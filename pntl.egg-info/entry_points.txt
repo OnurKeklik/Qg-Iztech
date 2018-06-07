@@ -1,0 +1,3 @@
+[console_scripts]
+pntl = pntl.cli:user_test
+
