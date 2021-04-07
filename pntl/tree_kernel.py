@@ -1,5 +1,7 @@
 import networkx as nx
 from lxml import html
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from bs4 import BeautifulSoup
 from bs4.element import NavigableString

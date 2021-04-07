@@ -16,9 +16,9 @@ import os
 import re
 import spacy
 from platform import architecture, system
-from allennlp.commands.serve import DEFAULT_MODELS
+from allennlp.predictors import Predictor
 from allennlp.service.predictors import SemanticRoleLabelerPredictor
-from pattern.en import conjugate, lemma, lexeme,PRESENT,SG
+#from pattern.en import conjugate, lemma, lexeme,PRESENT,SG
 
 try:
     from colorama import init
@@ -595,9 +595,9 @@ def checkForAppropriateObjOrSub(srls,j,sType):
     return ''
 
 def getBaseFormOfVerb (verb):
-    return lemma(verb)
-    """
-        with open('verbForms.txt', 'r') as myfile:
+    #return lemma(verb)
+    #todo: pattern no longer working use another library!
+    with open('verbForms.txt', 'r') as myfile:
         verb = verb.lower()
         f=myfile.read()
         oldString = find_between(f, "", "| "+verb+" ")
@@ -612,7 +612,6 @@ def getBaseFormOfVerb (verb):
             return verb
 
         return find_between(newString, "_ ", " |")
-    """
 
 def find_between( s, first, last ):
     try:
@@ -801,7 +800,7 @@ def generate(text):
     print ("Preprocessed text: "+ text)
     textList = []
     textList.append(text)
-    annotator = Annotator("/home/onur/question-generation/pntl/practnlptools", "/home/onur/question-generation/pntl", "edu.stanford.nlp.trees.")
+    annotator = Annotator("/Users/onur/Downloads/Qg-Iztech-master/pntl/practnlptools", "/Users/onur/Downloads/Qg-Iztech-master/pntl", "edu.stanford.nlp.trees.")
     #annotations = annotator.get_batch_annotations(textList, dep_parse=True)[0]
     try:
         posTags = annotator.get_annoations(textList, dep_parse=False)['pos']
@@ -810,7 +809,7 @@ def generate(text):
         emptyList = []
         return emptyList
     #print ("chunks "+str(chunks))
-    predictor = DEFAULT_MODELS['semantic-role-labeling'].predictor()
+    predictor = Predictor.from_path("https://s3-us-west-2.amazonaws.com/allennlp/models/srl-model-2018.05.25.tar.gz")
     srlResult = predictor.predict_json({"sentence": text})
 
     srls = []
@@ -1687,6 +1686,9 @@ def generate(text):
     return foundQuestions
     
 if __name__ == "__main__":
+    text = "In 1980, the son of Vincent J. McMahon, Vincent Kennedy McMahon, founded Titan Sports, Inc. and in 1982 purchased Capitol Wrestling Corporation from his father."
+    foundQuestions = generate(text)
+    #print(foundQuestions)
     """
     # question similarity and bleu score calculation for QGSTEC 2010 data
     from pycorenlp import StanfordCoreNLP
@@ -2053,7 +2055,7 @@ if __name__ == "__main__":
                             mFile.write(foundQuestions[k] + ' | ')
     """
     # evaluate .csv file for user study
-    import csv
+    '''import csv
     from collections import defaultdict
 
     columns = defaultdict(list) # each value in each column is appended to a list
@@ -2094,5 +2096,4 @@ if __name__ == "__main__":
     #print(columns['Difficulty'])
     #print(columns['Ambiguity'])
     #print(columns['Correctness'])
-    #print(columns['Relevance'])
-
+    #print(columns['Relevance'])'''
